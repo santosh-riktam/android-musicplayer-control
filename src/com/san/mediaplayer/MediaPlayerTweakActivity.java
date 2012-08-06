@@ -5,15 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.style.UpdateAppearance;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ToggleButton;
 
 public class MediaPlayerTweakActivity extends Activity {
-	Button prevButton, playPauseButton, stopButton, nextButton;
+	private Button prevButton, stopButton, nextButton;
+	private ToggleButton playPauseButton;
 
 	public static final String SERVICECMD = "com.android.music.musicservicecommand";
 	public static final String CMDNAME = "command";
@@ -23,28 +24,32 @@ public class MediaPlayerTweakActivity extends Activity {
 	public static final String CMDPREVIOUS = "previous";
 	public static final String CMDNEXT = "next";
 	private AudioManager audioManager;
-	Handler handler;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().addFlags(
+				WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+						| WindowManager.LayoutParams.FLAG_FULLSCREEN
+						| LayoutParams.FLAG_TURN_SCREEN_ON
+						| LayoutParams.FLAG_DISMISS_KEYGUARD);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 		prevButton = (Button) findViewById(R.id.prevButton);
-		playPauseButton = (Button) findViewById(R.id.playPauseButton);
+		playPauseButton = (ToggleButton) findViewById(R.id.playPauseButton);
 		stopButton = (Button) findViewById(R.id.stopButton);
 		nextButton = (Button) findViewById(R.id.nextButton);
 
 		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-		handler = new Handler();
 	}
 
 	private void updatePlayButtonImage() {
 		if (audioManager.isMusicActive())
-			playPauseButton.setBackgroundResource(R.drawable.pause);
+			playPauseButton.setChecked(true);
 		else
-			playPauseButton.setBackgroundResource(R.drawable.play);
+			playPauseButton.setChecked(false);
 	}
 
 	@Override
@@ -53,17 +58,7 @@ public class MediaPlayerTweakActivity extends Activity {
 		updatePlayButtonImage();
 	}
 
-	private void postButtonUpdateThread() {
-		handler.postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				updatePlayButtonImage();
-			}
-		}, 234);
-	}
-	
-	public void onMediaButtonClicked(View v) {
+	public void onMediaButtonClicked(final View v) {
 		String command = "";
 		switch (v.getId()) {
 		case R.id.prevButton:
@@ -71,11 +66,9 @@ public class MediaPlayerTweakActivity extends Activity {
 			break;
 		case R.id.playPauseButton:
 			command = CMDTOGGLEPAUSE;
-			postButtonUpdateThread();
 			break;
 		case R.id.stopButton:
 			command = CMDSTOP;
-			postButtonUpdateThread();
 			break;
 		case R.id.nextButton:
 			command = CMDNEXT;
@@ -88,6 +81,6 @@ public class MediaPlayerTweakActivity extends Activity {
 		Intent intent = new Intent(SERVICECMD);
 		intent.putExtra(CMDNAME, command);
 		sendBroadcast(intent);
-
 	}
+
 }

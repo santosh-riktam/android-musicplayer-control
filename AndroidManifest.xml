@@ -11,7 +11,7 @@
         android:label="Media control" >
         <activity
             android:name=".MediaPlayerTweakActivity"
-            android:label="Media control" >
+            android:label="Media control" android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -10,22 +10,26 @@
         android:layout_height="wrap_content"
         android:background="@drawable/prev" android:onClick="onMediaButtonClicked"/>
 
-    <Button
+    <ToggleButton
         android:id="@+id/playPauseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/play" android:onClick="onMediaButtonClicked"/>
+        android:textOn=""
+        android:textOff=""
+        android:background="@drawable/play_pause" android:onClick="onMediaButtonClicked"/>
 
     <Button
         android:id="@+id/stopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/stop" android:onClick="onMediaButtonClicked"/>
-
+
     <Button
         android:id="@+id/nextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/next" android:onClick="onMediaButtonClicked"/>
+                android:onClick="onMediaButtonClicked" 
+        android:background="@drawable/next"
+        />
 
 </LinearLayout>
